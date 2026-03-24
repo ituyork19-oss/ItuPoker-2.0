@@ -1,0 +1,37 @@
+{
+    "name": "ItuPoker 2.0",
+    "short_name": "ItuPoker",
+    "description": "Casino Poker Online - ItuPoker 2.0 by Chuintwo",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#020617",
+    "theme_color": "#020617",
+    "lang": "es",
+    "categories": [
+        "games",
+        "entertainment"
+    ],
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Jugar Ahora",
+            "url": "/",
+            "description": "Ir directamente al lobby de juego"
+        }
+    ]
+}

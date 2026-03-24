@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- SEO & Basic Meta -->
+    <title>ItuPoker 2.0 – Casino Online</title>
+    <meta name="description" content="ItuPoker 2.0 – El mejor Poker Online. Salas VIP, Torneos y modo superviviente. Desarrollado por Chuintwo." />
+    <meta name="author" content="Chuintwo" />
+    <meta name="keywords" content="poker, casino, online, juego, cartas, ItuPoker" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- PWA Colors & Theme -->
+    <meta name="theme-color" content="#020617" />
+    <meta name="background-color" content="#020617" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ItuPoker" />
+
+    <!-- Open Graph (for sharing) -->
+    <meta property="og:title" content="ItuPoker 2.0 – Casino Online" />
+    <meta property="og:description" content="Jugá Poker Online en tiempo real. Salas VIP, Torneos y Modo Superviviente." />
+    <meta property="og:type" content="website" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Register Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('[SW] Registered:', reg.scope))
+            .catch(err => console.warn('[SW] Registration failed:', err));
+        });
+      }
+    </script>
+  </body>
+</html>
