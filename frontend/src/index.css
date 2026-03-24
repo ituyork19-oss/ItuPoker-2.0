@@ -50,6 +50,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 #root {
@@ -123,8 +124,8 @@ body {
 /* Glassmorphism 3.0 */
 .glass-panel {
   background: var(--bg-panel);
-  backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid var(--border-glass);
   border-top: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
@@ -394,6 +395,7 @@ h3,
 /* Chat 2.0 */
 .chat-container {
   background: rgba(15, 23, 42, 0.4);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -405,6 +407,7 @@ h3,
   display: flex;
   flex-direction: column;
   padding: 30px 15px;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
@@ -415,6 +418,7 @@ h3,
   border-left: 1px solid var(--border-glass);
   display: flex;
   flex-direction: column;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   flex-shrink: 0;
 }
@@ -425,6 +429,7 @@ h3,
   border-left: 1px solid var(--border-glass);
   display: flex;
   flex-direction: column;
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   flex-shrink: 0;
 }
