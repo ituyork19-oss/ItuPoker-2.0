@@ -186,7 +186,7 @@ io.on('connection', (socket) => {
 
 // Start server after DB is initialized
 initDb().then(() => {
-    server.listen(PORT, () => {
+    server.listen(PORT, '0.0.0.0', () => {
         console.log(`ItuPoker Server running on port ${PORT}`);
     });
 }).catch(err => {
