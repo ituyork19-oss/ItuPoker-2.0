@@ -23,6 +23,13 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'ItuPokerSecretKey2026';
 
+console.log('[BOOT] Starting the server application...');
+
+// ROOT HEALTHCHECK
+app.get('/', (req, res) => {
+    res.status(200).send('ItuPoker Server is running normally. Welcome!');
+});
+
 // AUTHENTICATION ROUTES
 app.post('/api/auth/register', async (req, res) => {
     const { username, email, phone, password } = req.body;
@@ -185,6 +192,7 @@ io.on('connection', (socket) => {
 });
 
 // Start server after DB is initialized
+console.log(`[BOOT] Attempting to connect to PostgreSQL at ${process.env.DATABASE_URL ? 'URL PROVIDED' : 'URL MISSING!'}...`);
 initDb().then(() => {
     server.listen(PORT, '0.0.0.0', () => {
         console.log(`ItuPoker Server running on port ${PORT}`);
