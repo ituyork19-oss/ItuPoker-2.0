@@ -31,7 +31,7 @@ export default function Lobby({ user, onJoin, onLogout, socket }) {
     ];
 
     return (
-        <div className="app-container animate-fade-in" style={{ position: 'relative', width: '100vw', height: '100dvh', display: 'flex' }}>
+        <div className="app-container animate-fade-in" style={{ position: 'relative', width: '100vw', height: '100dvh', display: 'flex', flexDirection: 'row' }}>
 
             {/* Mobile Top Nav */}
             <div className="mobile-top-nav" style={{ display: 'none', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(2, 6, 23, 0.95)', borderBottom: '1px solid var(--border-glass)', padding: '8px 12px', alignItems: 'center', justifyContent: 'space-between', backdropFilter: 'blur(10px)' }}>
