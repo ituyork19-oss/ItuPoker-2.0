@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { playNotificationSound, playTickSound } from './utils/sounds';
+import { playNotificationSound } from './utils/sounds';
 
 export default function Chat({ socket, room = 'global', username }) {
     const [messages, setMessages] = useState([]);
@@ -27,7 +27,7 @@ export default function Chat({ socket, room = 'global', username }) {
         return () => {
             socket.off('chat_msg', handleNewMessage);
         };
-    }, [socket, room]);
+    }, [socket, room, username]);
 
     useEffect(() => {
         // Auto-scroll to bottom

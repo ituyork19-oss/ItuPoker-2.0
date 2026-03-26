@@ -10,12 +10,14 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const socket = io(API_URL);
 
 function App() {
-  const [user, setUser] = useState(null); // Auth State
-  const [token, setToken] = useState(localStorage.getItem('itupoker_token') || '');
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('itupoker_user');
+      return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+    } catch { return null; }
+  }); // Auth State
 
   const [inRoom, setInRoom] = useState(false);
-  const [roomId, setRoomId] = useState('');
-  const [playerName, setPlayerName] = useState('');
   const [gameState, setGameState] = useState(null);
   const [players, setPlayers] = useState([]);
   const [errorMsg, setErrorMsg] = useState('');
@@ -27,11 +29,8 @@ function App() {
       const savedUserStr = localStorage.getItem('itupoker_user');
       if (savedUserStr && savedUserStr !== 'undefined') {
         const savedUser = JSON.parse(savedUserStr);
-        if (savedUser) {
-          setUser(savedUser);
-          if (socket.connected) {
-            socket.emit('identify_user', savedUser);
-          }
+        if (savedUser && socket.connected) {
+          socket.emit('identify_user', savedUser);
         }
       }
     } catch (e) {
@@ -58,7 +57,6 @@ function App() {
 
     socket.on('game_state', (data) => {
       setInRoom(true);
-      setRoomId(data.roomId);
       setGameState(data.gameState);
       setPlayers(data.players);
     });
@@ -77,7 +75,6 @@ function App() {
     // New disconnect listener to reset state
     socket.on('disconnect', () => {
       setInRoom(false);
-      setRoomId('');
       setGameState(null);
       setPlayers([]);
       setErrorMsg('Desconectado del servidor.');
@@ -96,16 +93,13 @@ function App() {
 
   const handleLoginSuccess = (userData, jwtToken) => {
     setUser(userData);
-    setToken(jwtToken);
     localStorage.setItem('itupoker_token', jwtToken);
     localStorage.setItem('itupoker_user', JSON.stringify(userData));
-    setPlayerName(userData.username);
     socket.emit('identify_user', userData);
   };
 
   const handleLogout = () => {
     setUser(null);
-    setToken('');
     localStorage.removeItem('itupoker_token');
     localStorage.removeItem('itupoker_user');
     handleLeaveRoom();

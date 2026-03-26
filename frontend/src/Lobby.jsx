@@ -6,10 +6,8 @@ import { playTickSound, playHoverSound, startAmbientMusic, toggleMute } from './
 
 export default function Lobby({ user, onJoin, onLogout, socket }) {
     const [subView, setSubView] = useState('lobby');
-    const [selectedTier, setSelectedTier] = useState('Principiante');
     const [ranking, setRanking] = useState([]);
     const [isMuted, setIsMuted] = useState(false);
-    const [showMobileMenu, setShowMobileMenu] = useState(false);
 
     React.useEffect(() => {
         socket.emit('get_ranking');
@@ -31,28 +29,6 @@ export default function Lobby({ user, onJoin, onLogout, socket }) {
         { id: 'VIP', label: 'Sala VIP', chips: '10k Gold', difficulty: 'Difícil', color: 'var(--accent-neon-gold)' },
         { id: 'Torneos', label: 'Torneo Pro', chips: '10k Gold', difficulty: 'Experto', color: 'var(--accent-neon-purple)' }
     ];
-
-    const MenuButton = ({ id, icon: Icon, label }) => (
-        <button
-            className={`btn ${subView === id ? 'btn-primary' : ''}`}
-            onMouseEnter={playHoverSound}
-            style={{
-                width: '100%',
-                justifyContent: 'flex-start',
-                background: subView === id ? '' : 'transparent',
-                border: 'none',
-                padding: '12px 20px',
-                color: subView === id ? 'white' : 'var(--text-secondary)',
-                fontSize: '0.9rem'
-            }}
-            onClick={() => {
-                playTickSound();
-                setSubView(id);
-            }}
-        >
-            <Icon size={20} /> {label}
-        </button>
-    );
 
     return (
         <div className="app-container animate-fade-in" style={{ position: 'relative', width: '100vw', height: '100dvh', display: 'flex' }}>
@@ -94,11 +70,37 @@ export default function Lobby({ user, onJoin, onLogout, socket }) {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
-                    <MenuButton id="lobby" icon={LayoutDashboard} label="Lobby / Mesas" />
-                    <MenuButton id="profile" icon={User} label="Mi Perfil" />
-                    <MenuButton id="inventory" icon={Award} label="Mi Inventario" />
-                    <MenuButton id="ranking" icon={Trophy} label="Ranking Global" />
-                    <MenuButton id="store" icon={ShoppingBag} label="Tienda VIP" />
+                    {[
+                        { id: 'lobby', icon: LayoutDashboard, label: 'Lobby / Mesas' },
+                        { id: 'profile', icon: User, label: 'Mi Perfil' },
+                        { id: 'inventory', icon: Award, label: 'Mi Inventario' },
+                        { id: 'ranking', icon: Trophy, label: 'Ranking Global' },
+                        { id: 'store', icon: ShoppingBag, label: 'Tienda VIP' }
+                    ].map(menu => {
+                        const Icon = menu.icon;
+                        return (
+                            <button
+                                key={menu.id}
+                                className={`btn ${subView === menu.id ? 'btn-primary' : ''}`}
+                                onMouseEnter={playHoverSound}
+                                style={{
+                                    width: '100%',
+                                    justifyContent: 'flex-start',
+                                    background: subView === menu.id ? '' : 'transparent',
+                                    border: 'none',
+                                    padding: '12px 20px',
+                                    color: subView === menu.id ? 'white' : 'var(--text-secondary)',
+                                    fontSize: '0.9rem'
+                                }}
+                                onClick={() => {
+                                    playTickSound();
+                                    setSubView(menu.id);
+                                }}
+                            >
+                                <Icon size={20} /> {menu.label}
+                            </button>
+                        );
+                    })}
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: 'auto' }}>

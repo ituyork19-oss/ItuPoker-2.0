@@ -3,11 +3,20 @@ import Card from './Card';
 import Chat from './Chat';
 import { playFoldSound, playChipSound, playCardDealSound, playWinSound, playTickSound, playEpicWinSound, playHoverSound } from './utils/sounds';
 
+const generateConfetti = () => [...Array(60)].map(() => ({
+    left: `${Math.random() * 100}vw`,
+    animationDelay: `${Math.random() * 5}s`,
+    backgroundColor: ['#f59e0b', '#2563eb', '#10b981', '#dc2626'][Math.floor(Math.random() * 4)],
+    width: '12px',
+    height: '25px'
+}));
+
 export default function PokerTable({ gameState, players, myId, onLeave, onAction, socket }) {
     const [raiseAmount, setRaiseAmount] = useState(40);
     const [timeLeft, setTimeLeft] = useState(0);
     const [isSittingOut, setIsSittingOut] = useState(false);
     const [survivorWinner, setSurvivorWinner] = useState(null);
+    const [confettiStyles, setConfettiStyles] = useState([]);
 
     // Track previous states to trigger sounds only on changes
     const prevStage = useRef(gameState?.stage);
@@ -49,10 +58,10 @@ export default function PokerTable({ gameState, players, myId, onLeave, onAction
 
                 setTimeLeft(diff);
             };
-            updateTimer();
+            setTimeout(updateTimer, 0);
             interval = setInterval(updateTimer, 1000);
         } else {
-            setTimeLeft(0);
+            setTimeout(() => setTimeLeft(0), 0);
         }
         return () => clearInterval(interval);
     }, [gameState?.turnEndTime]);
@@ -62,6 +71,7 @@ export default function PokerTable({ gameState, players, myId, onLeave, onAction
 
         socket.on('survivor_winner', (data) => {
             setSurvivorWinner(data);
+            setConfettiStyles(generateConfetti());
             playEpicWinSound();
         });
 
@@ -96,32 +106,30 @@ export default function PokerTable({ gameState, players, myId, onLeave, onAction
 
     }, [gameState]);
 
-    if (!gameState) return <div className="app-container flex-center" style={{ fontSize: '1.5rem', color: 'var(--accent-neon-gold)' }}>⏳ Cargando Mesa...</div>;
-
-    const myPlayer = players.find(p => p.id === myId);
-
-    // Auto-fold logic if sitting out
-    const isMyTurn = gameState.players.find(p => p.id === myId)?.isActive && !myPlayer?.folded && !myPlayer?.allIn;
-    useEffect(() => {
-        if (isMyTurn && isSittingOut) {
-            setTimeout(() => {
-                handleActionWithSound('fold');
-            }, 500); // slight delay so it feels natural
-        }
-    }, [isMyTurn, isSittingOut]);
-
     const handleRaise = () => {
         onAction('raise', raiseAmount);
     };
 
-    const handleActionWithSound = (actionType) => {
+    const handleActionWithSound = React.useCallback((actionType) => {
         if (actionType === 'fold') playFoldSound();
         onAction(actionType);
-    };
+    }, [onAction]);
 
-    const onExitGame = () => {
-        window.location.reload(); // Hard reset to exit completely
-    };
+    useEffect(() => {
+        const myPlayerInfo = players?.find(p => p.id === myId);
+        const isMyTurn = gameState?.players?.find(p => p.id === myId)?.isActive && !myPlayerInfo?.folded && !myPlayerInfo?.allIn;
+        if (isMyTurn && isSittingOut) {
+            const timer = setTimeout(() => {
+                handleActionWithSound('fold');
+            }, 500); // slight delay so it feels natural
+            return () => clearTimeout(timer);
+        }
+    }, [gameState, players, myId, isSittingOut, handleActionWithSound]);
+
+    if (!gameState) return <div className="app-container flex-center" style={{ fontSize: '1.5rem', color: 'var(--accent-neon-gold)' }}>⏳ Cargando Mesa...</div>;
+
+    const myPlayer = players.find(p => p.id === myId);
+    const isMyTurn = gameState.players.find(p => p.id === myId)?.isActive && !myPlayer?.folded && !myPlayer?.allIn;
 
     // Calculate offset so the local player is always at seat-0 (bottom center)
     const myIndex = gameState.players.findIndex(p => p.id === myId);
@@ -326,16 +334,11 @@ export default function PokerTable({ gameState, players, myId, onLeave, onAction
             {/* Survivor Winner Celebration Overlay 2.0 */}
             {survivorWinner && (
                 <div className="winner-celebration-overlay">
-                    {[...Array(60)].map((_, i) => (
+                    {confettiStyles.map((style, i) => (
                         <div
                             key={i}
                             className="confetti"
-                            style={{
-                                left: `${Math.random() * 100}vw`,
-                                animationDelay: `${Math.random() * 5}s`,
-                                backgroundColor: ['#f59e0b', '#2563eb', '#10b981', '#dc2626'][Math.floor(Math.random() * 4)],
-                                width: '12px', height: '25px'
-                            }}
+                            style={style}
                         />
                     ))}
                     <div className="winner-content">

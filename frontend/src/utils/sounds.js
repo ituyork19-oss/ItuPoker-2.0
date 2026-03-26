@@ -58,7 +58,7 @@ class SoundManager {
             this.currentMusic = new Audio(path);
             this.currentMusic.volume = this.musicVolume;
             this.currentMusic.loop = loop;
-            this.currentMusic.play().catch(e => console.log("Music play blocked by browser or missing file"));
+            this.currentMusic.play().catch(() => console.log("Music play blocked by browser or missing file"));
         }
     }
 
@@ -83,7 +83,7 @@ class SoundManager {
         if (!audioCtx) return;
 
         switch (key) {
-            case 'CHIP_BET':
+            case 'CHIP_BET': {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'triangle';
@@ -96,7 +96,8 @@ class SoundManager {
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.1);
                 break;
-            case 'CARD_DEAL':
+            }
+            case 'CARD_DEAL': {
                 const bufferSize = audioCtx.sampleRate * 0.1;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -114,7 +115,8 @@ class SoundManager {
                 g.connect(audioCtx.destination);
                 noise.start();
                 break;
-            default:
+            }
+            default: {
                 // Generic tick for UI
                 const uiosc = audioCtx.createOscillator();
                 const uigain = audioCtx.createGain();
@@ -126,6 +128,8 @@ class SoundManager {
                 uigain.connect(audioCtx.destination);
                 uiosc.start();
                 uiosc.stop(audioCtx.currentTime + 0.05);
+                break;
+            }
         }
     }
 }
